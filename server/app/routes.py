@@ -3,6 +3,7 @@ from flask import request
 from werkzeug.utils import secure_filename
 import io
 import os
+import re
 # Imports the Google Cloud client library
 from google.cloud import vision
 
@@ -11,6 +12,9 @@ def allowed_file(filename):
     return ('.' in filename and
             filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS'])
 
+def find_dopings(composition):
+    regex = "[eEеЕ]{1,1}[-]?[0-9]{1,4}" # условие для поиска добавок
+    return re.findall(regex, composition)
 
 @app.route('/')
 @app.route('/index')
@@ -38,8 +42,11 @@ def upload():
 
         # texts[0] - весь распознанный текст целиком
         # начиная с texts[1] - отдельные слова
-        for text in texts:
-            print('\n"{}"'.format(text.description))
+        composition = texts[0].description
+        print(composition)
+        dopings = find_dopings(composition)
+        for doping in dopings:
+            print('\n"{}"'.format(doping))
 
         # TODO: write here code that finds E additives
         # and send them back to client
