@@ -1,5 +1,5 @@
 from app import app
-from flask import request
+from flask import request, jsonify
 from werkzeug.utils import secure_filename
 import io
 import os
@@ -20,6 +20,13 @@ def find_dopings(composition):
 @app.route('/index')
 def index():
     return "Hello, this is Efinder!"
+
+
+@app.route('/json')
+def show_json():
+    my_list = []
+    text = "this is very long text"
+    return jsonify(text=text, list=my_list)
 
 
 @app.route('/upload', methods=['POST'])
@@ -55,6 +62,6 @@ def upload():
 
         # TODO: write here code that finds E additives
         # and send them back to client
-        return "image received successfully\n"
+        return jsonify(composition=composition,dopings=formatted_dopings)
     
-    return "failed to get an image"
+    return jsonify(composition="failed to get an image",dopings=[])
