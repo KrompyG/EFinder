@@ -45,7 +45,12 @@ def upload():
         composition = texts[0].description
         print(composition)
         dopings = find_dopings(composition)
-        for doping in dopings:
+        
+        # приведение списка добавок к одному формату
+        formatted_dopings = list(map(lambda doping:
+            re.sub("[eEеЕ]{1,1}[-]?","e",doping), dopings))
+
+        for doping in formatted_dopings:
             print('\n"{}"'.format(doping))
 
         # TODO: write here code that finds E additives
